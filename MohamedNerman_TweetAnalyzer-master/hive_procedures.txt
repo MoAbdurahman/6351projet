@@ -1,0 +1,26 @@
+Auteurs : Nerman Muminovic & Mohamed Abdurahman 
+
+Création de la table Hive à mettre sur HDP après être rentré dans Hive avec la commande hive :
+
+DROP TABLE IF EXISTS historiqueTweets;
+
+CREATE TABLE IF NOT EXISTS historiqueTweets(`theme` string, `count` BIGINT, `time` string, `hour` string)
+COMMENT 'Tweeter count details'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS PARQUET
+LOCATION 'file:///user/spark/test;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/hadoop/filTest.csv'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',' 
+select `theme`,`hour`, sum(`count`) from historiqueTweets group by `theme`,`hour`;
+
+
+Ensuite, cela va permettre de créer un fichier csv qu'il va falloir récupérer avec la commande :
+
+hdfs dfs -get file:///home/hadoop/filTest.csv
+
+Il faut ensuite se rendre sur localhost:50070 pour aller récupérer le fichier csv sur la machine locale pour créer un dashboard sur Excel.
+
+S'il faut améliorer le projet, il faudrait pour le dashboard, utiliser Kibana ou Grafana.
